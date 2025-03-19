@@ -25,11 +25,18 @@ instance sub [Ring α] : Sub (Formula α) where
 instance mul' [Ring α] : Mul (Formula α) where
   mul := .Mult
 
-def size : Formula α → ℕ
+def size (f: Formula α) : ℕ :=
+match f with
 | .Var _ => 0
 | .Add g h => size g + size h + 1
 | .Mult g h => size g + size h + 1
 | .Neg g => size g + 1
 | .Const _ => 0
 
--- def depth : Formula → ℕ
+def depth (f: Formula α) : ℕ :=
+match f with
+| .Var _ => 1
+| .Add g h => max (depth g) (depth h) + 1
+| .Mult g h => max (depth g) (depth h) + 1
+| .Neg g => depth g + 1
+| .Const _ => 1
