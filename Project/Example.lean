@@ -1,9 +1,16 @@
 import AlgebraicComplexity.Formulas
 
-#check Formula.Const 0
-#check Formula.Const 1
-#check Formula.Var "variable"
-#check Formula.Add (.Const 1) (.Mult (.Const 1) (.Var "x"))
+def formula1 : Formula ℝ :=
+ Formula.Const 0
+
+def formula2 : Formula ℝ :=
+ Formula.Const 1
+
+def formula3 : Formula ℝ :=
+ Formula.Var "variable"
+
+def formula4 : Formula ℝ :=
+ Formula.Add (.Const 1) (.Mult (.Const 1) (.Var "x"))
 
 example : size (.Const 1) = 0 := sorry
 example : size (.Var "") = 0 := sorry
