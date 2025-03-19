@@ -33,4 +33,10 @@ match f with
 | .Neg g => size g + 1
 | .Const _ => 0
 
--- def depth : Formula → ℕ
+def depth (f: Formula α) : ℕ :=
+match f with
+| .Var _ => 1
+| .Add g h => max (depth g) (depth h) + 1
+| .Mult g h => max (depth g) (depth h) + 1
+| .Neg g => depth g + 1
+| .Const _ => 1
