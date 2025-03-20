@@ -51,4 +51,4 @@ match f with
 | .Add g h => evalToPolynomial g + evalToPolynomial h
 | .Mult g h => evalToPolynomial g * evalToPolynomial h
 | .Neg g => - evalToPolynomial g
-| .Const c => c
+| .Const c => Polynomial.C c
