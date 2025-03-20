@@ -7,6 +7,8 @@ inductive Formula (α : Type u) where
 | Neg (g : Formula α): Formula α
 | Const (c : α): Formula α
 
+notation "C[" val "]" => Formula.Const val
+notation "V[" name "]" =>  Formula.Var name
 instance zero [Ring α]: Zero (Formula α) where
   zero := .Const 0
 
