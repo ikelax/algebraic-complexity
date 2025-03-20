@@ -1,7 +1,9 @@
 import Mathlib
 
+open Polynomial
+
 inductive Formula (α : Type u) where
-| Var (n: String)
+| Var (x: String)
 | Add (g h: Formula α): Formula α
 | Mult (g h: Formula α): Formula α
 | Neg (g : Formula α): Formula α
@@ -37,8 +39,16 @@ match f with
 
 def depth (f: Formula α) : ℕ :=
 match f with
-| .Var _ => 1
+| .Var _ => 0
 | .Add g h => max (depth g) (depth h) + 1
 | .Mult g h => max (depth g) (depth h) + 1
 | .Neg g => depth g + 1
-| .Const _ => 1
+| .Const _ => 0
+
+noncomputable def evalToPolynomial [Ring α] (f: Formula α) : α[X] :=
+match f with
+| .Var x => X
+| .Add g h => evalToPolynomial g + evalToPolynomial h
+| .Mult g h => evalToPolynomial g * evalToPolynomial h
+| .Neg g => - evalToPolynomial g
+| .Const c => c
