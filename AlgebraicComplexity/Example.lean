@@ -2,44 +2,44 @@ import AlgebraicComplexity.Formulas
 
 open MvPolynomial
 
-def formula1 : Formula ℝ := C[0]
+def formula1 : Formula ℝ 3 := C[0]
 
-def formula2 : Formula ℝ := C[1]
+def formula2 : Formula ℝ 0 := C[1]
 
-def formula3 : Formula ℝ := V["variable"]
+def formula3 : Formula ℝ 1 := V[0]
 
-def formula4 : Formula ℝ := C[1] + C[1] * V["x"]
+def formula4 : Formula ℝ 1 := C[1] + C[1] * V[0]
 
-def formula5 : Formula ℝ := -C[1]
+def formula5 : Formula ℝ 5 := -C[1]
 
-def formula6 : Formula ℝ := -C[1] * V["x"] + V["y"]
+def formula6 : Formula ℝ 21 := -C[1] * V[4] + V[20] + V[0]
 
-def formula7 : Formula ℝ := -C[1] * C[3] + C[5]
+def formula7 : Formula ℝ 7 := -C[1] * C[3] + C[5]
 
-example : size C[1] = 0 := by rfl
-example : @size Real V["x"] = 0 := by rfl
-example : @size ℤ (-C[1]) = 1 := by rfl
-example : @size ℚ (V["x"] + C[1]) = 1 := by rfl
-example : @size ℚ (C[1] + C[0]) = 1 := by rfl
-example : @size ℝ (C[-3.4] * (C[0] + V["y"]) + V["x"] + C[1]) = 4 := by rfl
-example : @size ℝ (C[-3.4] * (C[0] + V["y"]) + (V["x"] + C[1])) = 4 := by rfl
-example : @size ℤ (-C[3] * (V["x"] + V["y"])) = 3 := by rfl
+example : @size ℝ 1 C[1] = 0 := by rfl
+example : @size Real 1 V[0] = 0 := by rfl
+example : @size ℤ 2 (-C[1]) = 1 := by rfl
+example : @size ℚ 2 (V[0] + C[1]) = 1 := by rfl
+example : @size ℚ 2 (C[1] + C[0]) = 1 := by rfl
+example : @size ℝ 3 (C[-3.4] * (C[0] + V[2]) + V[1] + C[1]) = 4 := by rfl
+example : @size ℝ 3 (C[-3.4] * (C[0] + V[2]) + (V[1] + C[1])) = 4 := by rfl
+example : @size ℤ 3 (-C[3] * (V[1] + V[2])) = 3 := by rfl
 
-example : depth C[1] = 0 := by rfl
-example : @depth Real V["x"] = 0 := by rfl
-example : @depth ℤ (-C[1]) = 1 := by rfl
-example : @depth ℚ (V["x"] + C[1]) = 1 := by rfl
-example : @depth ℚ (C[1] + C[0]) = 1 := by rfl
-example : @depth ℝ (C[-3.4] * (C[0] + V["y"]) + V["x"] + C[1]) = 4 := by rfl
-example : @depth ℝ (C[-3.4] * (C[0] + V["y"]) + (V["x"] + C[1])) = 3 := by rfl
-example : @depth ℤ (-C[3] * (V["x"] + V["y"])) = 2 := by rfl
+example : @depth ℝ 1 C[1] = 0 := by rfl
+example : @depth Real 1 V[0] = 0 := by rfl
+example : @depth ℤ 2 (-C[1]) = 1 := by rfl
+example : @depth ℚ 2 (V[1] + C[1]) = 1 := by rfl
+example : @depth ℚ 2 (C[1] + C[0]) = 1 := by rfl
+example : @depth ℝ 3 (C[-3.4] * (C[0] + V[2]) + V[1] + C[1]) = 4 := by rfl
+example : @depth ℝ 3 (C[-3.4] * (C[0] + V[2]) + (V[1] + C[1])) = 3 := by rfl
+example : @depth ℤ 3 (-C[3] * (V[1] + V[2])) = 2 := by rfl
 
 -- TODO: fix them after evalToPolynomial works
-example : @evalToPolynomial ℝ (C[1]) = 1 := by rfl
-example : @evalToPolynomial Real V["x"] = X "x" := by rfl
-example : @evalToPolynomial ℤ (-C[1]) = -1 := by rfl
-example : @evalToPolynomial ℚ (V["x"] + C[1]) = X "x" + 1 := by rfl
-example : @evalToPolynomial ℚ (C[1] + C[0]) = 1 + 0 := by rfl
-example : @evalToPolynomial ℝ (C[-3.4] * (C[0] + V["y"]) + V["x"] + C[1]) = -3.4 * (0 + X "y") + X "x" + 1 := by rfl
-example : @evalToPolynomial ℝ (C[-3.4] * (C[0] + V["y"]) + (V["x"] + C[1])) = -3.4 * (0 + X "y") + (X "x" + 1) := by rfl
-example : @evalToPolynomial ℤ (-C[3] * (V["x"] + V["y"])) = -3 * (X "x" + X "y") := by rfl
+example : @evalToPolynomial ℝ 1 (C[1]) = 1 := by rfl
+example : @evalToPolynomial Real 1 V[0] = X 1 := by rfl
+example : @evalToPolynomial ℤ 2 (-C[1]) = -1 := by rfl
+example : @evalToPolynomial ℚ 2 (V[1] + C[1]) = X 1 + 1 := by rfl
+example : @evalToPolynomial ℚ 2 (C[1] + C[0]) = 1 + 0 := by rfl
+example : @evalToPolynomial ℝ 3 (C[-3.4] * (C[0] + V[2]) + V[1] + C[1]) = -3.4 * (0 + X 2) + X 1 + 1 := by rfl
+example : @evalToPolynomial ℝ 3 (C[-3.4] * (C[0] + V[2]) + (V[1] + C[1])) = -3.4 * (0 + X 2) + (X 1 + 1) := by rfl
+example : @evalToPolynomial ℤ 3 (-C[3] * (V[1] + V[2])) = -3 * (X 1 + X 2) := by rfl

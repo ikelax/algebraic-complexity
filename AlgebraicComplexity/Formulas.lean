@@ -2,34 +2,34 @@ import Mathlib
 
 open MvPolynomial
 
-inductive Formula (α : Type u) where
-| Var (x: String)
-| Add (g h: Formula α): Formula α
-| Mult (g h: Formula α): Formula α
-| Neg (g : Formula α): Formula α
-| Const (c : α): Formula α
+inductive Formula (α : Type u) (n : ℕ) where
+| Var (x: Fin n)
+| Add (g h: Formula α n): Formula α n
+| Mult (g h: Formula α n): Formula α n
+| Neg (g : Formula α n): Formula α n
+| Const (c : α): Formula α n
 
 notation "C[" val "]" => Formula.Const val
-notation "V[" name "]" =>  Formula.Var name
-instance zero [Ring α]: Zero (Formula α) where
+notation "V[" name "]" =>  Formula.Var ⟨name, by decide⟩
+instance zero [Ring α]: Zero (Formula α n) where
   zero := .Const 0
 
-instance one [Ring α]: One (Formula α) where
+instance one [Ring α]: One (Formula α n) where
   one := .Const 1
 
-instance add [Ring α]: Add (Formula α) where
+instance add [Ring α]: Add (Formula α n) where
   add := .Add
 
-instance neg [Ring α] : Neg (Formula α) where
+instance neg [Ring α] : Neg (Formula α n) where
   neg := .Neg
 
-instance sub [Ring α] : Sub (Formula α) where
+instance sub [Ring α] : Sub (Formula α n) where
   sub a b := a + (- b)
 
-instance mul' [Ring α] : Mul (Formula α) where
+instance mul' [Ring α] : Mul (Formula α n) where
   mul := .Mult
 
-def size (f: Formula α) : ℕ :=
+def size (f: Formula α n) : ℕ :=
 match f with
 | .Var _ => 0
 | .Add g h => size g + size h + 1
@@ -37,7 +37,7 @@ match f with
 | .Neg g => size g + 1
 | .Const _ => 0
 
-def depth (f: Formula α) : ℕ :=
+def depth (f: Formula α n) : ℕ :=
 match f with
 | .Var _ => 0
 | .Add g h => max (depth g) (depth h) + 1
@@ -45,7 +45,7 @@ match f with
 | .Neg g => depth g + 1
 | .Const _ => 0
 
-noncomputable def evalToPolynomial [CommRing α] (f: Formula α) : (MvPolynomial String α) :=
+noncomputable def evalToPolynomial [CommRing α] (f: Formula α n) : (MvPolynomial (Fin n) α) :=
 match f with
 | .Var x => X x
 | .Add g h => evalToPolynomial g + evalToPolynomial h
