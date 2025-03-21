@@ -1,5 +1,7 @@
 import AlgebraicComplexity.Formulas
 
+open MvPolynomial
+
 def formula1 : Formula ℝ := C[0]
 
 def formula2 : Formula ℝ := C[1]
@@ -32,11 +34,12 @@ example : @depth ℝ (C[-3.4] * (C[0] + V["y"]) + V["x"] + C[1]) = 4 := by rfl
 example : @depth ℝ (C[-3.4] * (C[0] + V["y"]) + (V["x"] + C[1])) = 3 := by rfl
 example : @depth ℤ (-C[3] * (V["x"] + V["y"])) = 2 := by rfl
 
+-- TODO: fix them after evalToPolynomial works
 example : @evalToPolynomial ℝ (C[1]) = 1 := by rfl
-example : @evalToPolynomial Real V["x"] = X := by rfl
+example : @evalToPolynomial Real V["x"] = X "x" := by rfl
 example : @evalToPolynomial ℤ (-C[1]) = -1 := by rfl
-example : @evalToPolynomial ℚ (V["x"] + C[1]) = X + 1 := by rfl
+example : @evalToPolynomial ℚ (V["x"] + C[1]) = X "x" + 1 := by rfl
 example : @evalToPolynomial ℚ (C[1] + C[0]) = 1 + 0 := by rfl
-example : @evalToPolynomial ℝ (C[-3.4] * (C[0] + V["y"]) + V["x"] + C[1]) = -3.4 * (0 + X) + X + 1 := by rfl
-example : @evalToPolynomial ℝ (C[-3.4] * (C[0] + V["y"]) + (V["x"] + C[1])) = -3.4 * (0 + X) + (X + 1) := by rfl
-example : @evalToPolynomial ℤ (-C[3] * (V["x"] + V["y"])) = -3 * (X + X) := by rfl
+example : @evalToPolynomial ℝ (C[-3.4] * (C[0] + V["y"]) + V["x"] + C[1]) = -3.4 * (0 + X "y") + X "x" + 1 := by rfl
+example : @evalToPolynomial ℝ (C[-3.4] * (C[0] + V["y"]) + (V["x"] + C[1])) = -3.4 * (0 + X "y") + (X "x" + 1) := by rfl
+example : @evalToPolynomial ℤ (-C[3] * (V["x"] + V["y"])) = -3 * (X "x" + X "y") := by rfl
