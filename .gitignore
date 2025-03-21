@@ -34,3 +34,6 @@
 *.synctex.gz
 *.synctex.gz(busy)
 *.pdfsync
+
+## They were not included in LeanProject.
+Test.lean
