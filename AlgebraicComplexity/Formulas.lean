@@ -11,22 +11,22 @@ inductive Formula (α : Type u) where
 
 notation "C[" val "]" => Formula.Const val
 notation "V[" name "]" =>  Formula.Var name
-instance zero [CommSemiring α]: Zero (Formula α) where
+instance zero [Ring α]: Zero (Formula α) where
   zero := .Const 0
 
-instance one [CommSemiring α]: One (Formula α) where
+instance one [Ring α]: One (Formula α) where
   one := .Const 1
 
-instance add [CommSemiring α]: Add (Formula α) where
+instance add [Ring α]: Add (Formula α) where
   add := .Add
 
-instance neg [CommSemiring α] : Neg (Formula α) where
+instance neg [Ring α] : Neg (Formula α) where
   neg := .Neg
 
-instance sub [CommSemiring α] : Sub (Formula α) where
+instance sub [Ring α] : Sub (Formula α) where
   sub a b := a + (- b)
 
-instance mul' [CommSemiring α] : Mul (Formula α) where
+instance mul' [Ring α] : Mul (Formula α) where
   mul := .Mult
 
 def size (f: Formula α) : ℕ :=
