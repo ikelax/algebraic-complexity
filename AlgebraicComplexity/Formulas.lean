@@ -45,7 +45,8 @@ match f with
 | .Neg g => depth g + 1
 | .Const _ => 0
 
-noncomputable def evalToPolynomial [CommRing α] (f: Formula α n) : (MvPolynomial (Fin n) α) :=
+@[simp]
+noncomputable def evalToPolynomial [CommRing α] (f: Formula α n) :  (MvPolynomial (Fin n) α) :=
 match f with
 | .Var x => X x
 | .Add g h => evalToPolynomial g + evalToPolynomial h
