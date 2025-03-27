@@ -37,3 +37,5 @@
 
 ## They were not included in LeanProject.
 Test.lean
+*.xdv
+web.pdf
