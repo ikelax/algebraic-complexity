@@ -20,7 +20,7 @@
 
 title: Algebraic Complexity
 #email: your-email@example.com
-description: by Markus Bläser , Alexander Ikonomou and Shreyas Srinivas
+description: by Markus Bläser, Alexander Ikonomou and Shreyas Srinivas
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://ikelax.github.io/algebraic-complexity" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username:
