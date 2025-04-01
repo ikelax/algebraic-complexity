@@ -65,3 +65,6 @@ lemma mul_ge_size_one : size (.Mult g h) ≥ 1 := by
 lemma neg_ge_size_one : size (.Neg g) ≥ 1 := by
   rw [size]
   simp
+
+lemma size_zero_const_or_var (f: Formula α n) :
+  size f = 0 → f = .Var x ∨ f = .Const c := sorry
