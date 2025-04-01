@@ -66,16 +66,6 @@ lemma neg_ge_size_one : size (.Neg g) ≥ 1 := by
   rw [size]
   simp
 
-lemma must_be_Add_Mult_or_Neg (f: Formula α n)
-  (not_Var_or_Const: ∀ x : Fin n, ∀ c : α, f ≠ .Var x ∧ f ≠ .Const c) :
-  f = .Add g h ∨ f = .Mult g h ∨ f = .Neg g := by
-  induction f with
-  | Var y => sorry
-  | Const c => sorry
-  | Add g h => sorry
-  | Mult g h => sorry
-  | Neg g => sorry
-
 lemma size_var_zero : @size α n (.Var x) = 0 := by
   simp [size]
 
