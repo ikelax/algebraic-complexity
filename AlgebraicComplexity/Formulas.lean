@@ -54,24 +54,6 @@ match f with
 | .Neg g => - evalToPolynomial g
 | .Const c => MvPolynomial.C c
 
-lemma add_ge_size_one : size (.Add g h) ≥ 1 := by
-  rw [size]
-  simp
-
-lemma mul_ge_size_one : size (.Mult g h) ≥ 1 := by
-  rw [size]
-  simp
-
-lemma neg_ge_size_one : size (.Neg g) ≥ 1 := by
-  rw [size]
-  simp
-
-lemma size_var_zero : @size α n (.Var x) = 0 := by
-  simp [size]
-
-lemma size_const_zero : @size  α n (.Const c) = 0 := by
-  simp [size]
-
 lemma size_zero_const_or_var (f: Formula α n) :
   size f = 0 → (∃ x, f = .Var x) ∨ (∃ c, f = .Const c) := by
   intro h
