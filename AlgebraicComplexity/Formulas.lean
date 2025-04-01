@@ -59,3 +59,8 @@ lemma size_zero_const_or_var (f: Formula α n) :
   intro h
   cases f with (simp_all[size, h])
   done
+
+def L[CommRing α] (p: MvPolynomial (Fin n) α) (k: ℕ): Prop :=
+  ∃ f, evalToPolynomial f = p
+  ∧ (∀ g, evalToPolynomial g = p → k ≤ size g)
+  ∧ size f = k
