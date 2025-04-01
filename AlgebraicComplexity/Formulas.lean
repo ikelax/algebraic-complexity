@@ -53,3 +53,9 @@ match f with
 | .Mult g h => evalToPolynomial g * evalToPolynomial h
 | .Neg g => - evalToPolynomial g
 | .Const c => MvPolynomial.C c
+
+lemma size_zero_const_or_var (f: Formula α n) :
+  size f = 0 → (∃ x, f = .Var x) ∨ (∃ c, f = .Const c) := by
+  intro h
+  cases f with (simp_all[size, h])
+  done
