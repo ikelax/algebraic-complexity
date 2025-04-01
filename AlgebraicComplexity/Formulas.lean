@@ -76,8 +76,14 @@ lemma must_be_Add_Mult_or_Neg (f: Formula α n)
   | Mult g h => sorry
   | Neg g => sorry
 
+lemma size_var_zero : @size α n (.Var x) = 0 := by
+  simp [size]
+
+lemma size_const_zero : @size  α n (.Const c) = 0 := by
+  simp [size]
+
 lemma size_zero_const_or_var (f: Formula α n) :
-  size f = 0 → f = .Var x ∨ f = .Const c := by
-  contrapose!
-  intro not_Var_or_Const
-  apply must_be_Add_Mult_or_Neg at not_Var_or_Const
+  size f = 0 → (∃ x, f = .Var x) ∨ (∃ c, f = .Const c) := by
+  intro h
+  cases f with (simp_all[size, h])
+  done
