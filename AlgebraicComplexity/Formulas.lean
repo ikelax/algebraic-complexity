@@ -53,3 +53,15 @@ match f with
 | .Mult g h => evalToPolynomial g * evalToPolynomial h
 | .Neg g => - evalToPolynomial g
 | .Const c => MvPolynomial.C c
+
+lemma add_ge_size_one : size (.Add g h) ≥ 1 := by
+  rw [size]
+  simp
+
+lemma mul_ge_size_one : size (.Mult g h) ≥ 1 := by
+  rw [size]
+  simp
+
+lemma neg_ge_size_one : size (.Neg g) ≥ 1 := by
+  rw [size]
+  simp
