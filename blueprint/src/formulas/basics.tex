@@ -1,21 +1,7 @@
-\begin{lemma}\label{lem:addition-negation-subtraction-at-least-size-1}
-  Every algebraic formula where the root is an addition, subtraction or
-  negation has at least size $1$.
-\end{lemma}
-
-\begin{proof}
-  This follows by the definition of $\size$.
-\end{proof}
-
 \begin{lemma}
-  \uses{lem:addition-negation-subtraction-at-least-size-1}
   Every algebraic formula with size $0$ is a variable or a constant.
 \end{lemma}
 
 \begin{proof}
-  Proof by contraposition. Assume that $f$ is an algebraic formula that
-  is neither a variable nor a constant. Then, the root of $f$ must be an
-  addition, a subtraction or a negation. With
-  \ref{lem:addition-negation-subtraction-at-least-size-1} it follows
-  that $f$ has at least size 1.
+  This follows by the definition of $\size$.
 \end{proof}
