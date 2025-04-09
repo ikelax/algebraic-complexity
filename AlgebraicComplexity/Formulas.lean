@@ -64,3 +64,6 @@ def L[CommRing α] (p: MvPolynomial (Fin n) α) (k: ℕ): Prop :=
   ∃ f, evalToPolynomial f = p
   ∧ (∀ g, evalToPolynomial g = p → k ≤ size g)
   ∧ size f = k
+
+theorem complexity_monomial_le [CommRing α] (d: ℕ):
+  ∃ k: ℕ, @L α ((X 0)^d) k ∧ k ≤ d-1 := sorry
