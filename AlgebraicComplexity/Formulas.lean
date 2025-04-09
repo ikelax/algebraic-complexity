@@ -60,10 +60,10 @@ lemma size_zero_const_or_var (f: Formula α n) :
   cases f with (simp_all[size, h])
   done
 
-def L[CommRing α] (p: MvPolynomial (Fin n) α) (k: ℕ): Prop :=
+def L (n: ℕ) (α : Type u) [CommRing α] (p: MvPolynomial (Fin n) α) (k: ℕ): Prop :=
   ∃ f, evalToPolynomial f = p
   ∧ (∀ g, evalToPolynomial g = p → k ≤ size g)
   ∧ size f = k
 
 theorem complexity_monomial_le [CommRing α] (d: ℕ):
-  ∃ k: ℕ, @L α ((X 0)^d) k ∧ k ≤ d-1 := sorry
+  ∃ k: ℕ, @L n α ((X 0 : MvPolynomial (Fin n) α) ^d) _ k ∧ k ≤ d-1 := sorry
