@@ -94,7 +94,10 @@ theorem complexity_monomial_le [iCR: CommRing α] (n d: ℕ) (hn_pos : n > 0):
         simp [L] at ih
         obtain ⟨kn, ⟨circ_h, eval_h⟩, size_h⟩ := ih
         let new_circ : Formula α (n + 1) := Formula.Mult circ_h (.Var (n + 1))
-
-        sorry
+        use (kn + 1)
+        constructor
+        ·
+          done
+        · done
       ·
         sorry
