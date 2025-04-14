@@ -65,5 +65,5 @@ def L (n: ℕ) (α : Type u) [CommRing α] (p: MvPolynomial (Fin n) α) (k: ℕ)
   ∧ (∀ g, evalToPolynomial g = p → k ≤ size g)
   ∧ size f = k
 
-theorem complexity_monomial_le [CommRing α] (d: ℕ):
-  ∃ k: ℕ, @L n α ((X 0 : MvPolynomial (Fin n) α) ^d) _ k ∧ k ≤ d-1 := sorry
+theorem complexity_monomial_le [iCR: CommRing α] (n d: ℕ) (hn_pos : n > 0):
+  ∃ k: ℕ, L n α ((X ⟨0, by omega⟩ : MvPolynomial (Fin n) α) ^ d) k ∧ k ≤ d-1 := sorry
