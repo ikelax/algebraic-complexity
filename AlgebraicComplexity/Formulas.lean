@@ -60,10 +60,41 @@ lemma size_zero_const_or_var (f: Formula α n) :
   cases f with (simp_all[size, h])
   done
 
+def coerce_up (f : Formula α n) : Formula α (n + 1) :=
+  match f with
+    | .Var x => .Var x
+    | .Add g h => .Add (coerce_up g) (coerce_up h)
+    | .Mult g h => .Mult (coerce_up g) (coerce_up h)
+    | .Neg p => .Neg (coerce_up p)
+    | .Const c => .Const c
+instance : Coe (Formula α n) (Formula α (n + 1)) where
+  coe f := coerce_up f
+
+instance[CommSemiring α] : Coe (MvPolynomial (Fin n) α) (MvPolynomial (Fin <| n + 1) α) where
+  coe p := sorry
+
+lemma coerce_up_preserves_eval [CommRing α]
+  (f : Formula α n) :
+  evalToPolynomial f = evalToPolynomial (coerce_up f) := by -- figure out this coercion
+  sorry
+
 def L (n: ℕ) (α : Type u) [CommRing α] (p: MvPolynomial (Fin n) α) (k: ℕ): Prop :=
   ∃ f, evalToPolynomial f = p
   ∧ (∀ g, evalToPolynomial g = p → k ≤ size g)
   ∧ size f = k
 
 theorem complexity_monomial_le [iCR: CommRing α] (n d: ℕ) (hn_pos : n > 0):
-  ∃ k: ℕ, L n α ((X ⟨0, by omega⟩ : MvPolynomial (Fin n) α) ^ d) k ∧ k ≤ d-1 := sorry
+  ∃ k: ℕ, L n α ((X ⟨0, by omega⟩ : MvPolynomial (Fin n) α) ^ d) k ∧ k ≤ d-1 := by
+  induction n with
+  | zero =>
+      cases hn_pos
+  | succ n ih =>
+      by_cases hb : n > 0 <;> simp [hb, L]
+      · specialize ih hb
+        simp [L] at ih
+        obtain ⟨kn, ⟨circ_h, eval_h⟩, size_h⟩ := ih
+        let new_circ : Formula α (n + 1) := Formula.Mult circ_h (.Var (n + 1))
+
+        sorry
+      ·
+        sorry
