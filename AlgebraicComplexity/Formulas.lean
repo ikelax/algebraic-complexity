@@ -46,7 +46,7 @@ match f with
 | .Const _ => 0
 
 @[simp]
-noncomputable def evalToPolynomial [CommRing α] (f: Formula α n) :  (MvPolynomial (Fin n) α) :=
+noncomputable def evalToPolynomial [CommRing α] (f: Formula α n) : (MvPolynomial (Fin n) α) :=
 match f with
 | .Var x => X x
 | .Add g h => evalToPolynomial g + evalToPolynomial h
@@ -67,16 +67,58 @@ def coerce_up (f : Formula α n) : Formula α (n + 1) :=
     | .Mult g h => .Mult (coerce_up g) (coerce_up h)
     | .Neg p => .Neg (coerce_up p)
     | .Const c => .Const c
+
 instance : Coe (Formula α n) (Formula α (n + 1)) where
   coe f := coerce_up f
 
-instance[CommSemiring α] : Coe (MvPolynomial (Fin n) α) (MvPolynomial (Fin <| n + 1) α) where
-  coe p := sorry
+#print MvPolynomial.rename
+#print MvPolynomial
+#print AddMonoidAlgebra
 
-lemma coerce_up_preserves_eval [CommRing α]
+noncomputable def incrVar [CommSemiring α]
+  (p : MvPolynomial (Fin n) α) : MvPolynomial (Fin (n + 1)) α :=
+  MvPolynomial.rename Fin.castSucc p
+
+@[simp]
+lemma incrVar_composes_add [CommSemiring α]: ∀ f g : MvPolynomial (Fin n) α,
+  (incrVar f) + (incrVar g) = incrVar (f + g) := by
+  intro f g
+  simp [incrVar]
+
+
+@[simp]
+lemma incrVar_composes_mult [CommSemiring α] : ∀ f g : MvPolynomial (Fin n) α,
+  (incrVar f) * (incrVar g) = incrVar (f * g) := by
+  intro f g
+  simp [incrVar]
+
+@[simp]
+lemma incrVar_composes_neg [CommRing α] : ∀ f : MvPolynomial (Fin n) α,
+  - (incrVar f) = incrVar (- f) := by
+  intro f
+  simp [incrVar]
+
+noncomputable instance[CommSemiring α] :
+  Coe (MvPolynomial (Fin n) α) (MvPolynomial (Fin <| n + 1) α) where
+  coe p := incrVar p
+
+
+
+lemma coerce_up_preserves_incrVar_eval [CommRing α]
   (f : Formula α n) :
-  evalToPolynomial f = evalToPolynomial (coerce_up f) := by -- figure out this coercion
-  sorry
+  ∀ p : MvPolynomial (Fin n) α,
+    evalToPolynomial f = p →
+    evalToPolynomial (coerce_up f) = incrVar p := by
+  intro p hp_eval
+  induction f generalizing p with
+      (
+        simp_all [incrVar, coerce_up, Fin.castSucc, Fin.castAdd];
+        subst hp_eval
+        simp_all only [algHom_C, algebraMap_eq, rename_X, map_add, map_mul, map_neg]
+      )
+  done
+
+
 
 def L (n: ℕ) (α : Type u) [CommRing α] (p: MvPolynomial (Fin n) α) (k: ℕ): Prop :=
   ∃ f, evalToPolynomial f = p
