@@ -60,6 +60,9 @@ lemma size_zero_const_or_var (f: Formula α n) :
   cases f with (simp_all[size, h])
   done
 
+/--
+`coerce_up f` coerces a formula `f` in `n` variables to a formula in `n + 1` variables.
+-/
 def coerce_up (f : Formula α n) : Formula α (n + 1) :=
   match f with
     | .Var x => .Var x
@@ -68,6 +71,9 @@ def coerce_up (f : Formula α n) : Formula α (n + 1) :=
     | .Neg p => .Neg (coerce_up p)
     | .Const c => .Const c
 
+/--
+This is the Coe typeclass instance for the above coercion. T
+-/
 instance : Coe (Formula α n) (Formula α (n + 1)) where
   coe f := coerce_up f
 
@@ -75,10 +81,18 @@ instance : Coe (Formula α n) (Formula α (n + 1)) where
 #print MvPolynomial
 #print AddMonoidAlgebra
 
+/--
+`incrVar p` coerces an `n` variable `MvPolynomial` to an `n + 1` variable `MvPolynomial`
+-/
 noncomputable def incrVar [CommSemiring α]
   (p : MvPolynomial (Fin n) α) : MvPolynomial (Fin (n + 1)) α :=
   MvPolynomial.rename Fin.castSucc p
 
+
+/--
+The three lemmas below show that the `incrVar` function respects ring operations
+on the polynomial.
+-/
 @[simp]
 lemma incrVar_composes_add [CommSemiring α]: ∀ f g : MvPolynomial (Fin n) α,
   (incrVar f) + (incrVar g) = incrVar (f + g) := by
@@ -125,21 +139,35 @@ def L (n: ℕ) (α : Type u) [CommRing α] (p: MvPolynomial (Fin n) α) (k: ℕ)
   ∧ (∀ g, evalToPolynomial g = p → k ≤ size g)
   ∧ size f = k
 
-theorem complexity_monomial_le [iCR: CommRing α] (n d: ℕ) (hn_pos : n > 0):
+theorem complexity_monomial_le [CommRing α] (n d: ℕ) (hn_pos : n > 0) (hd_pos : d > 0):
   ∃ k: ℕ, L n α ((X ⟨0, by omega⟩ : MvPolynomial (Fin n) α) ^ d) k ∧ k ≤ d-1 := by
-  induction n generalizing d with
+  induction n  with
   | zero =>
       cases hn_pos
   | succ n ih =>
       by_cases hb : n > 0 <;> simp [hb, L]
-      · specialize ih (d - 1) hb
+      · specialize ih hb
         simp [L] at ih
         obtain ⟨kn, ⟨circ_h, eval_h⟩, size_h⟩ := ih
         let new_circ : Formula α (n + 1) := Formula.Mult circ_h (.Var (n + 1))
         use (kn + 1)
         constructor
-        · 
-          done
+        · use new_circ
+          constructor
+          · simp_all [new_circ, evalToPolynomial]
+            have eval_h' := eval_h.left
+            have coerce_pres_incr := coerce_up_preserves_incrVar_eval circ_h (X ⟨0, by omega⟩ ^ (d -1)) eval_h'
+            rw[coerce_pres_incr]
+            simp [incrVar]
+            ring_nf
+            apply mul_pow_sub_one ?_ (X 0)
+            done
+          ·
+            done
         · done
       ·
         sorry
+
+example {α} (hn : n > 0) [iCR: CommRing α]: @X α (Fin n) iCR.toCommSemiring ⟨0, by omega⟩ ^ (d - 1) * X ⟨0, by omega⟩ = (X ⟨0, by omega⟩) ^ d := by
+
+  sorry
