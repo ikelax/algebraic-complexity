@@ -127,18 +127,18 @@ def L (n: ℕ) (α : Type u) [CommRing α] (p: MvPolynomial (Fin n) α) (k: ℕ)
 
 theorem complexity_monomial_le [iCR: CommRing α] (n d: ℕ) (hn_pos : n > 0):
   ∃ k: ℕ, L n α ((X ⟨0, by omega⟩ : MvPolynomial (Fin n) α) ^ d) k ∧ k ≤ d-1 := by
-  induction n with
+  induction n generalizing d with
   | zero =>
       cases hn_pos
   | succ n ih =>
       by_cases hb : n > 0 <;> simp [hb, L]
-      · specialize ih hb
+      · specialize ih (d - 1) hb
         simp [L] at ih
         obtain ⟨kn, ⟨circ_h, eval_h⟩, size_h⟩ := ih
         let new_circ : Formula α (n + 1) := Formula.Mult circ_h (.Var (n + 1))
         use (kn + 1)
         constructor
-        ·
+        · 
           done
         · done
       ·
