@@ -139,18 +139,29 @@ def L (n: ℕ) (α : Type u) [CommRing α] (p: MvPolynomial (Fin n) α) (k: ℕ)
   ∧ (∀ g, evalToPolynomial g = p → k ≤ size g)
   ∧ size f = k
 
+-- Why do we need hn_pos and hd_pos? n and d are in ℕ.
+-- ℕ starts from 0 (see induction). So, we ensure that d-1 is in ℕ.
 theorem complexity_monomial_le [CommRing α] (n d: ℕ) (hn_pos : n > 0) (hd_pos : d > 0):
+  -- What does ⟨0, by omega⟩?
   ∃ k: ℕ, L n α ((X ⟨0, by omega⟩ : MvPolynomial (Fin n) α) ^ d) k ∧ k ≤ d-1 := by
+  -- Proof by induction over n
   induction n  with
   | zero =>
+      -- Done because 0 > 0 is a contradiction.
       cases hn_pos
-  | succ n ih =>
+  | succ n ih => -- Why ∀ in ih
+      -- What does <;>
+      -- Case distinction over n > 0
       by_cases hb : n > 0 <;> simp [hb, L]
+      -- Specialize removes ∀ n > 0. We already assume this with hb.
       · specialize ih hb
         simp [L] at ih
+        -- What does obtain? Rename stuff?
         obtain ⟨kn, ⟨circ_h, eval_h⟩, size_h⟩ := ih
         let new_circ : Formula α (n + 1) := Formula.Mult circ_h (.Var (n + 1))
+        -- Replaces k with kn + 1 in goal
         use (kn + 1)
+        -- Split ∧. First prove left side and then right side.
         constructor
         · use new_circ
           constructor
