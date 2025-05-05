@@ -158,11 +158,13 @@ theorem complexity_monomial_le [CommRing α] (n d: ℕ) (hn_pos : n > 0) (hd_pos
         simp [L] at ih
         -- What does obtain? Rename stuff?
         obtain ⟨kn, ⟨circ_h, eval_h⟩, size_h⟩ := ih
+        -- The formula for n+1
         let new_circ : Formula α (n + 1) := Formula.Mult circ_h (.Var (n + 1))
         -- Replaces k with kn + 1 in goal
         use (kn + 1)
         -- Split ∧. First prove left side and then right side.
         constructor
+        -- Prove that new_circ satisfies the statement.
         · use new_circ
           constructor
           · simp_all [new_circ, evalToPolynomial]
