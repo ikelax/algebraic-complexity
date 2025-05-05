@@ -175,12 +175,10 @@ theorem complexity_monomial_le [CommRing α] (n d: ℕ) (hn_pos : n > 0) (hd_pos
             ring_nf
             apply mul_pow_sub_one ?_ (X 0)
             done
-          ·
-            done
-        · done
+          · sorry
+        · sorry
       ·
         sorry
 
 example {α} (hn : n > 0) [iCR: CommRing α]: @X α (Fin n) iCR.toCommSemiring ⟨0, by omega⟩ ^ (d - 1) * X ⟨0, by omega⟩ = (X ⟨0, by omega⟩) ^ d := by
-
   sorry
