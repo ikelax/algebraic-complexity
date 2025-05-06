@@ -161,7 +161,7 @@ theorem complexity_monomial_le [CommRing α] (n d: ℕ) (hn_pos : n > 0) (hd_pos
         -- The formula for n+1
         let new_circ : Formula α (n + 1) := Formula.Mult circ_h (.Var (n + 1))
         -- Replaces k with kn + 1 in goal
-        use (kn + 1)
+        use kn
         -- Split ∧. First prove left side and then right side.
         constructor
         -- Prove that new_circ satisfies the statement.
@@ -176,9 +176,9 @@ theorem complexity_monomial_le [CommRing α] (n d: ℕ) (hn_pos : n > 0) (hd_pos
             apply mul_pow_sub_one ?_ (X 0)
             done
           · sorry
-        · sorry
-      ·
-        sorry
+        · apply size_h
+      · sorry
+
 
 example {α} (hn : n > 0) [iCR: CommRing α]: @X α (Fin n) iCR.toCommSemiring ⟨0, by omega⟩ ^ (d - 1) * X ⟨0, by omega⟩ = (X ⟨0, by omega⟩) ^ d := by
   sorry
