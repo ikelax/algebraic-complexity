@@ -175,7 +175,9 @@ theorem complexity_monomial_le [CommRing α] (n d: ℕ) (hn_pos : n > 0) (hd_pos
             ring_nf
             apply mul_pow_sub_one ?_ (X 0)
             done
-          · sorry
+          · constructor
+            . sorry
+            . sorry
         · apply size_h
       · sorry
 
