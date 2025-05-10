@@ -185,8 +185,7 @@ theorem complexity_monomial_le [CommRing α] (n d: ℕ) (hn_pos : n > 0) (hd_pos
               have size_circ_h := eval_h_right.right
               rw [size_circ_h]
               rw [size]
-        · have size_h_plus_one := Nat.add_le_add_right size_h 1
-          sorry
+        · omega
       · sorry
 
 
