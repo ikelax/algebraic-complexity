@@ -143,16 +143,16 @@ def L (n: ℕ) (α : Type u) [CommRing α] (p: MvPolynomial (Fin n) α) (k: ℕ)
 -- ℕ starts from 0 (see induction). So, we ensure that d-1 is in ℕ.
 theorem complexity_monomial_le [CommRing α] (n d: ℕ) (hn_pos : n > 0) (hd_pos : d > 0):
   -- What does ⟨0, by omega⟩?
-  ∃ k: ℕ, L n α ((X ⟨0, by omega⟩ : MvPolynomial (Fin n) α) ^ d) k ∧ k ≤ d-1 := by
+  ∃ k: ℕ, L (n+1) α ((X ⟨0, by omega⟩ : MvPolynomial (Fin (n + 1)) α) ^ d) k ∧ k ≤ d-1 := by
   -- Proof by induction over n
-  induction n  with
+  induction d  with
   | zero =>
       -- Done because 0 > 0 is a contradiction.
-      cases hn_pos
-  | succ n ih => -- Why ∀ in ih
+      cases hd_pos
+  | succ d ih => -- Why ∀ in ih
       -- What does <;>
       -- Case distinction over n > 0
-      by_cases hb : n > 0 <;> simp [hb, L]
+      by_cases hb : d > 0 <;> simp [hb, L]
       -- Specialize removes ∀ n > 0. We already assume this with hb.
       · specialize ih hb
         simp [L] at ih
@@ -161,7 +161,7 @@ theorem complexity_monomial_le [CommRing α] (n d: ℕ) (hn_pos : n > 0) (hd_pos
         -- The formula for n+1
         let new_circ : Formula α (n + 1) := Formula.Mult circ_h (.Var (n + 1))
         -- Replaces k with kn + 1 in goal
-        use kn
+        use (kn + 1)
         -- Split ∧. First prove left side and then right side.
         constructor
         -- Prove that new_circ satisfies the statement.
@@ -177,8 +177,14 @@ theorem complexity_monomial_le [CommRing α] (n d: ℕ) (hn_pos : n > 0) (hd_pos
             done
           · constructor
             . sorry
-            . sorry
-        · apply size_h
+            . rw [size]
+              have evalToPolynomial_h := eval_h.left
+              have eval_h_right := eval_h.right
+              have size_circ_h := eval_h_right.right
+              rw [size_circ_h]
+              rw [size]
+        · have size_h_plus_one := Nat.add_le_add_right size_h 1
+          sorry
       · sorry
 
 
