@@ -176,7 +176,9 @@ theorem complexity_monomial_le [CommRing α] (n d: ℕ) (hn_pos : n > 0) (hd_pos
             apply mul_pow_sub_one ?_ (X 0)
             done
           · constructor
-            . sorry
+            . intro h1
+              intro h2
+              sorry
             . rw [size]
               have evalToPolynomial_h := eval_h.left
               have eval_h_right := eval_h.right
