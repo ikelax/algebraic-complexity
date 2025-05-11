@@ -1,5 +1,7 @@
 import Mathlib
 
+set_option linter.unusedTactic false
+
 open MvPolynomial
 
 inductive Formula (α : Type u) (n : ℕ) where
@@ -149,6 +151,7 @@ theorem complexity_monomial_le [CommRing α] (n d: ℕ) (hn_pos : n > 0) (hd_pos
   | zero =>
       -- Done because 0 > 0 is a contradiction.
       cases hd_pos
+      done
   | succ d ih => -- Why ∀ in ih
       -- What does <;>
       -- Case distinction over n > 0
@@ -169,6 +172,7 @@ theorem complexity_monomial_le [CommRing α] (n d: ℕ) (hn_pos : n > 0) (hd_pos
           constructor
           · simp_all [new_circ, evalToPolynomial]
             ring_nf
+            done
             -- have eval_h' := eval_h.left
             -- have coerce_pres_incr := coerce_up_preserves_incrVar_eval circ_h (X 0 ^ d) eval_h'
             -- rw[coerce_pres_incr]
@@ -186,7 +190,9 @@ theorem complexity_monomial_le [CommRing α] (n d: ℕ) (hn_pos : n > 0) (hd_pos
               have size_circ_h := eval_h_right.right
               rw [size_circ_h]
               rw [size]
+              done
         · omega
+          done
       · sorry
 
 
