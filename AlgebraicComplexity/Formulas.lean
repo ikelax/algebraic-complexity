@@ -168,13 +168,14 @@ theorem complexity_monomial_le [CommRing α] (n d: ℕ) (hn_pos : n > 0) (hd_pos
         · use new_circ
           constructor
           · simp_all [new_circ, evalToPolynomial]
-            have eval_h' := eval_h.left
-            have coerce_pres_incr := coerce_up_preserves_incrVar_eval circ_h (X 0 ^ d) eval_h'
-            rw[coerce_pres_incr]
-            simp [incrVar]
             ring_nf
-            apply mul_pow_sub_one ?_ (X 0)
-            done
+            -- have eval_h' := eval_h.left
+            -- have coerce_pres_incr := coerce_up_preserves_incrVar_eval circ_h (X 0 ^ d) eval_h'
+            -- rw[coerce_pres_incr]
+            -- simp [incrVar]
+            -- ring_nf
+            -- apply mul_pow_sub_one ?_ (X 0)
+            -- done
           · constructor
             . intro h1
               intro h2
