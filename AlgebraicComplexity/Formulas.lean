@@ -62,6 +62,11 @@ lemma size_zero_const_or_var (f: Formula α n) :
   cases f with (simp_all[size, h])
   done
 
+lemma size_highest_degree [CommRing α] (p: MvPolynomial (Fin n) α):
+  ∀ f: Formula α n, evalToPolynomial f = p
+  → size f ≥ MvPolynomial.totalDegree p - 1 := by
+    sorry
+
 /--
 `coerce_up f` coerces a formula `f` in `n` variables to a formula in `n + 1` variables.
 -/
@@ -181,9 +186,14 @@ theorem complexity_monomial_le [CommRing α] (n d: ℕ) (hn_pos : n > 0) (hd_pos
             -- apply mul_pow_sub_one ?_ (X 0)
             -- done
           · constructor
-            . intro h1
-              intro h2
-              sorry
+            . intro f
+              intro f_eq_X_d_plus_1
+              have kn_plus_1_leq_d: kn + 1 ≤ d := by omega
+              have t := size_highest_degree (X 0 ^ (d + 1))
+              have size_f_geq_d: d ≤ size f := by
+                sorry
+              omega
+              done
             . rw [size]
               have evalToPolynomial_h := eval_h.left
               have eval_h_right := eval_h.right
@@ -202,12 +212,16 @@ theorem complexity_monomial_le [CommRing α] (n d: ℕ) (hn_pos : n > 0) (hd_pos
               . rw[d_zero]
                 simp
                 rw[evalToPolynomial]
+                done
               . constructor
                 . intro h1
                   intro h2
                   omega
+                  done
                 . rw[size]
+                  done
           . omega
+            done
 
 
 example {α} (hn : n > 0) [iCR: CommRing α]: @X α (Fin n) iCR.toCommSemiring ⟨0, by omega⟩ ^ (d - 1) * X ⟨0, by omega⟩ = (X ⟨0, by omega⟩) ^ d := by
