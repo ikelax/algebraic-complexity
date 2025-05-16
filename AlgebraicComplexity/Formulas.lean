@@ -193,7 +193,21 @@ theorem complexity_monomial_le [CommRing α] (n d: ℕ) (hn_pos : n > 0) (hd_pos
               done
         · omega
           done
-      · sorry
+      · have d_zero: d = 0 := by omega
+        let new_circ : Formula α (n+1) := Formula.Var 0
+        use 0
+        . constructor
+          . use new_circ
+            . constructor
+              . rw[d_zero]
+                simp
+                rw[evalToPolynomial]
+              . constructor
+                . intro h1
+                  intro h2
+                  omega
+                . rw[size]
+          . omega
 
 
 example {α} (hn : n > 0) [iCR: CommRing α]: @X α (Fin n) iCR.toCommSemiring ⟨0, by omega⟩ ^ (d - 1) * X ⟨0, by omega⟩ = (X ⟨0, by omega⟩) ^ d := by
