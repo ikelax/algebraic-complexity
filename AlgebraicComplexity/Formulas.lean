@@ -148,7 +148,7 @@ def L (n: ℕ) (α : Type u) [CommRing α] (p: MvPolynomial (Fin n) α) (k: ℕ)
 
 -- Why do we need hn_pos and hd_pos? n and d are in ℕ.
 -- ℕ starts from 0 (see induction). So, we ensure that d-1 is in ℕ.
-theorem complexity_monomial_le [iCRα : CommRing α] (n d: ℕ) (hn_pos : n > 0) (hd_pos : d > 0):
+theorem complexity_monomial_le [iCRα : CommRing α] [Nontrivial α] (n d: ℕ) (hn_pos : n > 0) (hd_pos : d > 0):
   -- What does ⟨0, by omega⟩?
   ∃ k: ℕ, L (n+1) α ((X ⟨0, by omega⟩ : MvPolynomial (Fin (n + 1)) α) ^ d) k ∧ k ≤ d-1 := by
   -- Proof by induction over n
@@ -189,9 +189,13 @@ theorem complexity_monomial_le [iCRα : CommRing α] (n d: ℕ) (hn_pos : n > 0)
             . intro f
               intro f_eq_X_d_plus_1
               have kn_plus_1_leq_d: kn + 1 ≤ d := by omega
-              have t := @size_highest_degree α (n + 1) iCRα (X 0 ^ (d + 1))
+              have size_of_X_d_plus_1 := @size_highest_degree α (n + 1) iCRα (X 0 ^ (d + 1))
               have size_f_geq_d: d ≤ size f := by
-                sorry
+                specialize size_of_X_d_plus_1 f
+                apply size_of_X_d_plus_1 at f_eq_X_d_plus_1
+                rw [totalDegree_X_pow] at f_eq_X_d_plus_1
+                omega
+                done
               omega
               done
             . rw [size]
