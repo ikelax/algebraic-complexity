@@ -67,7 +67,7 @@ lemma size_highest_degree [CommRing α] [Nontrivial α] (p: MvPolynomial (Fin n)
   → size f ≥ MvPolynomial.totalDegree p - 1 := by
     intro f
     intro e
-    induction f with
+    induction f  generalizing p with
       | Var X => {
         rw[evalToPolynomial] at e
         symm at e
@@ -91,7 +91,7 @@ lemma size_highest_degree [CommRing α] [Nontrivial α] (p: MvPolynomial (Fin n)
         rw[e]
         rw[size]
         have m := totalDegree_mul (evalToPolynomial g) (evalToPolynomial h)
-        rw[size]
+        rw[size.eq_def]
         -- rw[totalDegree_mul]
         -- simp
         sorry
@@ -110,6 +110,7 @@ lemma size_highest_degree [CommRing α] [Nontrivial α] (p: MvPolynomial (Fin n)
         let q := -p
         have e' : evalToPolynomial g = q := by sorry
         apply ih at e'
+
         sorry
       }
     done
