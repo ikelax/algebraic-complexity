@@ -50,7 +50,7 @@ match f with
 @[simp]
 noncomputable def evalToPolynomial [CommRing α] (f: Formula α n) : (MvPolynomial (Fin n) α) :=
 match f with
-| .Var x => X x
+| .Var x => X x ^ 1
 | .Add g h => evalToPolynomial g + evalToPolynomial h
 | .Mult g h => evalToPolynomial g * evalToPolynomial h
 | .Neg g => - evalToPolynomial g
@@ -62,10 +62,57 @@ lemma size_zero_const_or_var (f: Formula α n) :
   cases f with (simp_all[size, h])
   done
 
-lemma size_highest_degree [CommRing α] (p: MvPolynomial (Fin n) α):
+lemma size_highest_degree [CommRing α] [Nontrivial α] (p: MvPolynomial (Fin n) α):
   ∀ f: Formula α n, evalToPolynomial f = p
   → size f ≥ MvPolynomial.totalDegree p - 1 := by
-    sorry
+    intro f
+    intro e
+    induction f with
+      | Var X => {
+        rw[evalToPolynomial] at e
+        symm at e
+        rw[e]
+        rw[totalDegree_X_pow]
+        simp
+        done
+      }
+      | Add g h ihg ihh => {
+        rw[evalToPolynomial] at e
+        symm at e
+        rw[e]
+        rw[size]
+        -- rw[totalDegree_Add]
+        -- simp
+        sorry
+      }
+      | Mult g h ihg ihh => {
+        rw[evalToPolynomial] at e
+        symm at e
+        rw[e]
+        rw[size]
+        have m := totalDegree_mul (evalToPolynomial g) (evalToPolynomial h)
+        rw[size]
+        -- rw[totalDegree_mul]
+        -- simp
+        sorry
+      }
+      | Const c => {
+        rw[evalToPolynomial] at e
+        symm at e
+        rw[e]
+        rw[totalDegree_C]
+        omega
+        done
+      }
+      | Neg g ih => {
+        rw [evalToPolynomial] at e
+        rw [neg_eq_iff_eq_neg] at e
+        let q := -p
+        have e' : evalToPolynomial g = q := by sorry
+        apply ih at e'
+        sorry
+      }
+    done
 
 /--
 `coerce_up f` coerces a formula `f` in `n` variables to a formula in `n + 1` variables.
@@ -148,7 +195,7 @@ def L (n: ℕ) (α : Type u) [CommRing α] (p: MvPolynomial (Fin n) α) (k: ℕ)
 
 -- Why do we need hn_pos and hd_pos? n and d are in ℕ.
 -- ℕ starts from 0 (see induction). So, we ensure that d-1 is in ℕ.
-theorem complexity_monomial_le [iCRα : CommRing α] [Nontrivial α] (n d: ℕ) (hn_pos : n > 0) (hd_pos : d > 0):
+theorem complexity_monomial_le [iCRα : CommRing α] [ntα: Nontrivial α] (n d: ℕ) (hn_pos : n > 0) (hd_pos : d > 0):
   -- What does ⟨0, by omega⟩?
   ∃ k: ℕ, L (n+1) α ((X ⟨0, by omega⟩ : MvPolynomial (Fin (n + 1)) α) ^ d) k ∧ k ≤ d-1 := by
   -- Proof by induction over n
@@ -189,7 +236,7 @@ theorem complexity_monomial_le [iCRα : CommRing α] [Nontrivial α] (n d: ℕ) 
             . intro f
               intro f_eq_X_d_plus_1
               have kn_plus_1_leq_d: kn + 1 ≤ d := by omega
-              have size_of_X_d_plus_1 := @size_highest_degree α (n + 1) iCRα (X 0 ^ (d + 1))
+              have size_of_X_d_plus_1 := @size_highest_degree α (n + 1) iCRα ntα (X 0 ^ (d + 1))
               have size_f_geq_d: d ≤ size f := by
                 specialize size_of_X_d_plus_1 f
                 apply size_of_X_d_plus_1 at f_eq_X_d_plus_1
@@ -216,6 +263,7 @@ theorem complexity_monomial_le [iCRα : CommRing α] [Nontrivial α] (n d: ℕ) 
               . rw[d_zero]
                 simp
                 rw[evalToPolynomial]
+                simp
                 done
               . constructor
                 . intro h1
