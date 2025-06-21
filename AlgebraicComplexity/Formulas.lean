@@ -62,56 +62,33 @@ lemma size_zero_const_or_var (f: Formula α n) :
   cases f with (simp_all[size, h])
   done
 
-lemma size_highest_degree [CommRing α] [Nontrivial α] (p: MvPolynomial (Fin n) α):
-  ∀ f: Formula α n, evalToPolynomial f = p
-  → size f ≥ MvPolynomial.totalDegree p - 1 := by
+lemma size_highest_degree [CommRing α] [Nontrivial α] :
+  ∀ f: Formula α n, size f ≥ MvPolynomial.totalDegree (evalToPolynomial f) - 1 := by
     intro f
-    intro e
-    induction f  generalizing p with
+    induction f with
       | Var X => {
-        rw[evalToPolynomial] at e
-        symm at e
-        rw[e]
-        rw[totalDegree_X_pow]
+        rw[evalToPolynomial, totalDegree_X_pow]
         simp
-        done
       }
       | Add g h ihg ihh => {
-        rw[evalToPolynomial] at e
-        symm at e
-        rw[e]
-        rw[size]
-        -- rw[totalDegree_Add]
-        -- simp
-        sorry
+        rw[evalToPolynomial, size]
+        have h : (evalToPolynomial g + evalToPolynomial h).totalDegree - 1 ≤ max (size g) (size h) := by
+          have t := totalDegree_add (evalToPolynomial g) (evalToPolynomial h)
+          omega
+        omega
       }
       | Mult g h ihg ihh => {
-        rw[evalToPolynomial] at e
-        symm at e
-        rw[e]
-        rw[size]
+        rw[evalToPolynomial, size]
         have m := totalDegree_mul (evalToPolynomial g) (evalToPolynomial h)
-        rw[size.eq_def]
-        -- rw[totalDegree_mul]
-        -- simp
-        sorry
+        omega
       }
       | Const c => {
-        rw[evalToPolynomial] at e
-        symm at e
-        rw[e]
-        rw[totalDegree_C]
+        rw[evalToPolynomial, totalDegree_C]
         omega
-        done
       }
       | Neg g ih => {
-        rw [evalToPolynomial] at e
-        rw [neg_eq_iff_eq_neg] at e
-        let q := -p
-        have e' : evalToPolynomial g = q := by sorry
-        apply ih at e'
-
-        sorry
+        rw [evalToPolynomial, size, totalDegree_neg]
+        omega
       }
     done
 
@@ -237,11 +214,11 @@ theorem complexity_monomial_le [iCRα : CommRing α] [ntα: Nontrivial α] (n d:
             . intro f
               intro f_eq_X_d_plus_1
               have kn_plus_1_leq_d: kn + 1 ≤ d := by omega
-              have size_of_X_d_plus_1 := @size_highest_degree α (n + 1) iCRα ntα (X 0 ^ (d + 1))
+              have shd := @size_highest_degree α (n + 1) iCRα ntα
               have size_f_geq_d: d ≤ size f := by
-                specialize size_of_X_d_plus_1 f
-                apply size_of_X_d_plus_1 at f_eq_X_d_plus_1
-                rw [totalDegree_X_pow] at f_eq_X_d_plus_1
+                specialize shd f
+                rw [f_eq_X_d_plus_1] at shd
+                rw [totalDegree_X_pow] at shd
                 omega
                 done
               omega
