@@ -171,45 +171,25 @@ def L (n: ℕ) (α : Type u) [CommRing α] (p: MvPolynomial (Fin n) α) (k: ℕ)
   ∧ (∀ g, evalToPolynomial g = p → k ≤ size g)
   ∧ size f = k
 
--- Why do we need hn_pos and hd_pos? n and d are in ℕ.
--- ℕ starts from 0 (see induction). So, we ensure that d-1 is in ℕ.
 theorem complexity_monomial_le [iCRα : CommRing α] [ntα: Nontrivial α] (n d: ℕ) (hn_pos : n > 0) (hd_pos : d > 0):
-  -- What does ⟨0, by omega⟩?
   ∃ k: ℕ, L (n+1) α ((X ⟨0, by omega⟩ : MvPolynomial (Fin (n + 1)) α) ^ d) k ∧ k ≤ d-1 := by
-  -- Proof by induction over n
   induction d  with
   | zero =>
-      -- Done because 0 > 0 is a contradiction.
       cases hd_pos
       done
-  | succ d ih => -- Why ∀ in ih
-      -- What does <;>
-      -- Case distinction over n > 0
+  | succ d ih =>
       by_cases hb : d > 0 <;> simp [hb, L]
-      -- Specialize removes ∀ n > 0. We already assume this with hb.
       · specialize ih hb
         simp [L] at ih
-        -- What does obtain? Rename stuff?
         obtain ⟨kn, ⟨circ_h, eval_h⟩, size_h⟩ := ih
-        -- The formula for n+1
         let new_circ : Formula α (n + 1) := Formula.Mult circ_h (.Var (n + 1))
-        -- Replaces k with kn + 1 in goal
         use (kn + 1)
-        -- Split ∧. First prove left side and then right side.
         constructor
-        -- Prove that new_circ satisfies the statement.
         · use new_circ
           constructor
           · simp_all [new_circ, evalToPolynomial]
             ring_nf
             done
-            -- have eval_h' := eval_h.left
-            -- have coerce_pres_incr := coerce_up_preserves_incrVar_eval circ_h (X 0 ^ d) eval_h'
-            -- rw[coerce_pres_incr]
-            -- simp [incrVar]
-            -- ring_nf
-            -- apply mul_pow_sub_one ?_ (X 0)
-            -- done
           · constructor
             . intro f
               intro f_eq_X_d_plus_1
