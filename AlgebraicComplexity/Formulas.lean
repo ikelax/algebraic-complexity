@@ -227,4 +227,31 @@ theorem complexity_monomial [iCRα : CommRing α] [ntα: Nontrivial α] (n d: �
 
 theorem horners_rule [iCRα : CommRing α] (d: ℕ) (p: MvPolynomial (Fin 1) α):
   totalDegree p = d →
-  ∃ k: ℕ, L (1) α p k ∧ k ≤ 2 * d := by sorry
+  ∃ k: ℕ, L (1) α p k ∧ k ≤ 2 * d := by
+  intro t
+  induction d with
+  | zero =>
+    use 0
+    constructor
+    . rw [L]
+      have tC := p.totalDegree_eq_zero_iff_eq_C
+      have pC : C (coeff 0 p) = p := by
+        symm
+        apply tC.mp
+        exact t
+        done
+      let circ : Formula α (1) := Formula.Const (coeff 0 p)
+      use circ
+      constructor
+      . rw[evalToPolynomial]
+        exact pC
+        done
+      . constructor
+        . simp
+        . rw[size]
+          done
+      done
+    . simp
+    done
+  | succ sd => sorry
+  done
