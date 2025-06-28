@@ -224,3 +224,7 @@ theorem complexity_monomial [iCRα : CommRing α] [ntα: Nontrivial α] (n d: �
             . rw[size]
               omega
               done
+
+theorem horners_rule [iCRα : CommRing α] (d: ℕ) (p: MvPolynomial (Fin 1) α):
+  totalDegree p = d →
+  ∃ k: ℕ, L (1) α p k ∧ k ≤ 2 * d := by sorry
