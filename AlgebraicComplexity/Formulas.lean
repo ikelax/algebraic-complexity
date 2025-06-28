@@ -171,9 +171,9 @@ def L (n: ℕ) (α : Type u) [CommRing α] (p: MvPolynomial (Fin n) α) (k: ℕ)
   ∧ (∀ g, evalToPolynomial g = p → k ≤ size g)
   ∧ size f = k
 
-theorem complexity_monomial_le [iCRα : CommRing α] [ntα: Nontrivial α] (n d: ℕ) (hn_pos : n > 0) (hd_pos : d > 0):
-  ∃ k: ℕ, L (n+1) α ((X ⟨0, by omega⟩ : MvPolynomial (Fin (n + 1)) α) ^ d) k ∧ k ≤ d-1 := by
-  induction d  with
+theorem complexity_monomial [iCRα : CommRing α] [ntα: Nontrivial α] (n d: ℕ) (hn_pos : n > 0) (hd_pos : d > 0):
+  ∃ k: ℕ, L (n+1) α ((X ⟨0, by omega⟩ : MvPolynomial (Fin (n + 1)) α) ^ d) k ∧ k = d-1 := by
+  induction d with
   | zero =>
       cases hd_pos
       done
@@ -181,54 +181,46 @@ theorem complexity_monomial_le [iCRα : CommRing α] [ntα: Nontrivial α] (n d:
       by_cases hb : d > 0 <;> simp [hb, L]
       · specialize ih hb
         simp [L] at ih
-        obtain ⟨kn, ⟨circ_h, eval_h⟩, size_h⟩ := ih
+        obtain ⟨circ_h, eval_h, size_h⟩ := ih
         let new_circ : Formula α (n + 1) := Formula.Mult circ_h (.Var (n + 1))
-        use (kn + 1)
+        use new_circ
         constructor
-        · use new_circ
-          constructor
-          · simp_all [new_circ, evalToPolynomial]
-            ring_nf
-            done
-          · constructor
-            . intro f
-              intro f_eq_X_d_plus_1
-              have kn_plus_1_leq_d: kn + 1 ≤ d := by omega
-              have shd := @size_highest_degree α (n + 1) iCRα ntα
-              have size_f_geq_d: d ≤ size f := by
-                specialize shd f
-                rw [f_eq_X_d_plus_1] at shd
-                rw [totalDegree_X_pow] at shd
-                omega
-                done
+        · simp_all [new_circ, evalToPolynomial]
+          ring_nf
+          done
+        · constructor
+          . intro f
+            intro f_eq_X_d_plus_1
+            -- have kn_plus_1_leq_d: kn + 1 ≤ d := by omega
+            have shd := @size_highest_degree α (n + 1) iCRα ntα
+            have size_f_geq_d: d ≤ size f := by
+              specialize shd f
+              rw [f_eq_X_d_plus_1] at shd
+              rw [totalDegree_X_pow] at shd
               omega
               done
-            . rw [size]
-              have evalToPolynomial_h := eval_h.left
-              have eval_h_right := eval_h.right
-              have size_circ_h := eval_h_right.right
-              rw [size_circ_h]
-              rw [size]
-              done
-        · omega
-          done
+            omega
+            done
+          . rw [size]
+            have size_circ_h := size_h.right
+            rw [size_circ_h]
+            rw [size]
+            omega
+            done
       · have d_zero: d = 0 := by omega
         let new_circ : Formula α (n+1) := Formula.Var 0
-        use 0
+        use new_circ
         . constructor
-          . use new_circ
-            . constructor
-              . rw[d_zero]
-                simp
-                rw[evalToPolynomial]
-                simp
-                done
-              . constructor
-                . intro h1
-                  intro h2
-                  omega
-                  done
-                . rw[size]
-                  done
-          . omega
+          . rw[d_zero]
+            simp
+            rw[evalToPolynomial]
+            simp
             done
+          . constructor
+            . intro h1
+              intro h2
+              omega
+              done
+            . rw[size]
+              omega
+              done
