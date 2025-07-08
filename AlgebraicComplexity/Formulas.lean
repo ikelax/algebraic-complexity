@@ -191,7 +191,6 @@ theorem complexity_monomial [iCRα : CommRing α] [ntα: Nontrivial α] (n d: �
         · constructor
           . intro f
             intro f_eq_X_d_plus_1
-            -- have kn_plus_1_leq_d: kn + 1 ≤ d := by omega
             have shd := @size_highest_degree α (n + 1) iCRα ntα
             have size_f_geq_d: d ≤ size f := by
               specialize shd f
@@ -229,7 +228,7 @@ theorem horners_rule [iCRα : CommRing α] (d: ℕ) (p: MvPolynomial (Fin 1) α)
   totalDegree p = d →
   ∃ k: ℕ, L (1) α p k ∧ k ≤ 2 * d := by
   intro t
-  induction d with
+  induction d generalizing p with
   | zero =>
     use 0
     constructor
@@ -253,5 +252,12 @@ theorem horners_rule [iCRα : CommRing α] (d: ℕ) (p: MvPolynomial (Fin 1) α)
       done
     . simp
     done
-  | succ sd => sorry
+  | succ hd hp =>
+    use (2 * (hd + 1))
+    constructor
+    . rw [L]
+
+      sorry
+    . simp
+      done
   done
