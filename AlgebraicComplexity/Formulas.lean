@@ -191,7 +191,6 @@ theorem complexity_monomial [iCRα : CommRing α] [ntα: Nontrivial α] (n d: �
         · constructor
           . intro f
             intro f_eq_X_d_plus_1
-            -- have kn_plus_1_leq_d: kn + 1 ≤ d := by omega
             have shd := @size_highest_degree α (n + 1) iCRα ntα
             have size_f_geq_d: d ≤ size f := by
               specialize shd f
@@ -224,3 +223,41 @@ theorem complexity_monomial [iCRα : CommRing α] [ntα: Nontrivial α] (n d: �
             . rw[size]
               omega
               done
+
+theorem horners_rule [iCRα : CommRing α] (d: ℕ) (p: MvPolynomial (Fin 1) α):
+  totalDegree p = d →
+  ∃ k: ℕ, L (1) α p k ∧ k ≤ 2 * d := by
+  intro t
+  induction d generalizing p with
+  | zero =>
+    use 0
+    constructor
+    . rw [L]
+      have tC := p.totalDegree_eq_zero_iff_eq_C
+      have pC : C (coeff 0 p) = p := by
+        symm
+        apply tC.mp
+        exact t
+        done
+      let circ : Formula α (1) := Formula.Const (coeff 0 p)
+      use circ
+      constructor
+      . rw[evalToPolynomial]
+        exact pC
+        done
+      . constructor
+        . simp
+        . rw[size]
+          done
+      done
+    . simp
+    done
+  | succ hd hp =>
+    use (2 * (hd + 1))
+    constructor
+    . rw [L]
+
+      sorry
+    . simp
+      done
+  done
