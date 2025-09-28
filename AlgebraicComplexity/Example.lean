@@ -1,4 +1,5 @@
 import AlgebraicComplexity.Formulas
+import AlgebraicComplexity.Circuit
 import Mathlib
 
 open MvPolynomial
@@ -44,3 +45,11 @@ example : @evalToPolynomial ℝ 3 _ (C[-3] * (C[0] + V[2]) + V[1] + C[1]) =
     (C (-3)) * (0 + (X 2)) + (X 1) + 1 := by simp
 example : @evalToPolynomial ℚ  3 _ (C[-3] * (C[0] + V[2]) + (V[1] + C[1])) = (C (-3)) * (0 + (X 2)) + ((X 1) + 1) := by simp
 example : @evalToPolynomial ℤ 3 _ (-C[3] * (V[1] + V[2])) = -3 * (X 1 + X 2) := by simp[evalToPolynomial]
+
+def circuit1 : Circuit 3 := Const[0]
+def circuit2 : Circuit 0 := Const[1]
+def circuit3 : Circuit 1 := Var[0]
+def circuit4 : Circuit 1 := Const[1] + Const[1] * Var[0]
+def circuit5 : Circuit 5 := -Const[1]
+def circuit6 : Circuit 21 := -Const[1] * Var[4] + Var[20] + Var[0]
+def circuit7 : Circuit 7 := -Const[1] * Const[3] + Const[5]

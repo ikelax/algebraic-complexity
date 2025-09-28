@@ -86,20 +86,40 @@ inductive Circuit (n : ℕ) where
   | Const (c : ℝ)
   | Neg (g : Circuit n)
 
-def size (c: Circuit n) : ℕ :=
+def size' (c: Circuit n) : ℕ :=
   match c with
   | .Var _ => 0
   | .MetaVar _ => 0
-  | .Sum c d => size c + size d + 1
-  | .Prod c d => size c + size d + 1
+  | .Sum c d => size' c + size' d + 1
+  | .Prod c d => size' c + size' d + 1
   | .Const _ => 0
-  | .Neg d => size d + 1
+  | .Neg d => size' d + 1
 
-def depth (c: Circuit n) : ℕ :=
+def depth' (c: Circuit n) : ℕ :=
   match c with
   | .Var _ => 0
   | .MetaVar _ => 0
-  | .Sum c d => max (depth c) (depth d) + 1
-  | .Prod c d => max (depth c) (depth d) + 1
+  | .Sum c d => max (depth' c) (depth' d) + 1
+  | .Prod c d => max (depth' c) (depth' d) + 1
   | .Const _ => 0
-  | .Neg d => depth d + 1
+  | .Neg d => depth' d + 1
+
+notation "Const[" val "]" => Circuit.Const val
+notation "Var[" name "]" =>  Circuit.Var ⟨name, by decide⟩
+instance zero': Zero (Circuit n) where
+  zero := .Const 0
+
+instance one': One (Circuit n) where
+  one := .Const 1
+
+instance add': Add (Circuit n) where
+  add := .Sum
+
+instance neg': Neg (Circuit n) where
+  neg := .Neg
+
+instance sub': Sub (Circuit n) where
+  sub a b := a + (- b)
+
+instance mul'': Mul (Circuit n) where
+  mul := .Prod
