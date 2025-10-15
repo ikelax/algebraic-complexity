@@ -1,7 +1,10 @@
 import Mathlib
 import Std.Data.HashMap
+import Lean
 
 set_option linter.unusedTactic false
+
+open MvPolynomial
 
 --        x
 -- +          *
@@ -123,3 +126,13 @@ instance sub': Sub (Circuit n) where
 
 instance mul'': Mul (Circuit n) where
   mul := .Prod
+
+@[simp]
+noncomputable def evalToPolynomial' (circ: Circuit n) (context: Lean.AssocList ℕ (Circuit n)) : (MvPolynomial (Fin n) ℝ) :=
+  match circ with
+  | .Var x => X x ^ 1
+  | .MetaVar _ => 0
+  | .Sum g h => evalToPolynomial' g context + evalToPolynomial' h context
+  | .Prod g h => evalToPolynomial' g context * evalToPolynomial' h context
+  | .Neg g => - evalToPolynomial' g context
+  | .Const c => MvPolynomial.C c

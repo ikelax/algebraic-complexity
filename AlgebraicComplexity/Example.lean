@@ -53,3 +53,31 @@ def circuit4 : Circuit 1 := Const[1] + Const[1] * Var[0]
 def circuit5 : Circuit 5 := -Const[1]
 def circuit6 : Circuit 21 := -Const[1] * Var[4] + Var[20] + Var[0]
 def circuit7 : Circuit 7 := -Const[1] * Const[3] + Const[5]
+
+example : @size' 1 Const[1] = 0 := by rfl
+example : @size' 1 Var[0] = 0 := by rfl
+example : @size' 2 (-Const[1]) = 1 := by rfl
+example : @size' 2 (Var[0] + Const[1]) = 1 := by rfl
+example : @size' 2 (Const[1] + Const[0]) = 1 := by rfl
+example : @size' 3 (Const[-3.4] * (Const[0] + Var[2]) + Var[1] + Const[1]) = 4 := by rfl
+example : @size' 3 (Const[-3.4] * (Const[0] + Var[2]) + (Var[1] + Const[1])) = 4 := by rfl
+example : @size' 3 (-Const[3] * (Var[1] + Var[2])) = 3 := by rfl
+
+example : @depth' 1 Const[1] = 0 := by rfl
+example : @depth' 1 Var[0] = 0 := by rfl
+example : @depth' 2 (-Const[1]) = 1 := by rfl
+example : @depth' 2 (Var[1] + Const[1]) = 1 := by rfl
+example : @depth' 2 (Const[1] + Const[0]) = 1 := by rfl
+example : @depth' 3 (Const[-3.4] * (Const[0] + Var[2]) + Var[1] + Const[1]) = 4 := by rfl
+example : @depth' 3 (Const[-3.4] * (Const[0] + Var[2]) + (Var[1] + Const[1])) = 3 := by rfl
+example : @depth' 3 (-Const[3] * (Var[1] + Var[2])) = 2 := by rfl
+
+example : @evalToPolynomial' 1 Const[1] Lean.AssocList.empty = 1 := by rfl
+example : @evalToPolynomial' 1 Var[0] Lean.AssocList.empty = X 1 := by simp[evalToPolynomial']
+example : @evalToPolynomial' 3 (-Const[3] * (Var[1] + Var[2])) Lean.AssocList.empty = -3 * (X 1 + X 2) := by
+  simp[evalToPolynomial']
+  . constructor
+    . rfl
+example : @evalToPolynomial' 3 (-Var[1] * (Const[-4] + Var[2])) Lean.AssocList.empty = -X 1 * (-4 + X 2) := by
+  simp[evalToPolynomial']
+  . constructor
