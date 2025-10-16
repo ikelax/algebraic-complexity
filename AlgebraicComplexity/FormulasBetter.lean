@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2025 Shreyas Srinivas, Alexander Ikonomou. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Alexander Ikonomou, Shreyas Srinivas
+-/
 import Mathlib
 
 set_option linter.unusedTactic false
