@@ -5,6 +5,7 @@ import Lean
 set_option linter.unusedTactic false
 
 open MvPolynomial
+open Lean
 
 --        x
 -- +          *
@@ -128,11 +129,13 @@ instance mul'': Mul (Circuit n) where
   mul := .Prod
 
 @[simp]
-noncomputable def evalToPolynomial' (circ: Circuit n) (context: Lean.AssocList ℕ (Circuit n)) : (MvPolynomial (Fin n) ℝ) :=
+noncomputable def evalToPolynomial' (circ: Circuit n) (context: AssocList ℕ (Circuit n)) : (MvPolynomial (Fin n) ℝ) :=
   match circ with
   | .Var x => X x ^ 1
-  | .MetaVar _ => 0
+  | .MetaVar x => match (AssocList.find? x context) with
+    | some p => evalToPolynomial' p context
+    | none => 0
   | .Sum g h => evalToPolynomial' g context + evalToPolynomial' h context
   | .Prod g h => evalToPolynomial' g context * evalToPolynomial' h context
   | .Neg g => - evalToPolynomial' g context
-  | .Const c => MvPolynomial.C c
+  | .Const c => C c
