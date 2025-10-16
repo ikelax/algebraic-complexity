@@ -29,8 +29,8 @@ inductive CTerm (α : Type u) (ID : Type v) where
  You can always distinguish between the lambda calculus stuff
 and the purely circuit stuff. This matters for several stuff -/
 inductive Circuit (α : Type u) (ID : Type v) where
-  | Pure (t : CTerm α ID) -- Pure Terms
-  | Abs (t : Circuit α ID) -- Lambda abstraction. De Bruijn indices. No free variables. Disallow looseBVars.
+  | Pure (t : CTerm α ID) -- Pure Termsthose
+  | Abs (t : Circuit α ID) -- Lambda abstraction. De Bruijn indices. No free variables. Disallow loose BVars.
   | App (c₁ c₂ : Circuit α ID) -- Apply
 
 variable {α : Type u} {ID : Type v}
@@ -116,24 +116,29 @@ instance [Ring α]: One (Circuit α ID) where
 
 
 
-def size (f: CTerm α ID) : ℕ :=
+def sizeCTerm (f: CTerm α ID) : ℕ :=
 match f with
 | .CVar _ => 1
-| .BVar _ => 1
-| .Add g h => size g + size h + 1
-| .Mult g h => size g + size h + 1
-| .Neg g => size g + 1
+| .BVar _ => 1 -- this I doubt can be decided until it is substituted. But I am also not sure matching the textbook definition makes much sense. What happens if a Lambda is unapplied?
+| .Add g h => sizeCTerm g + sizeCTerm h + 1
+| .Mult g h => sizeCTerm g + sizeCTerm h + 1
+| .Neg g => sizeCTerm g + 1
 | .Const _ => 0
 
-def depth (f: CTerm α ID) : ℕ :=
+def depthCTerm (f: CTerm α ID) : ℕ :=
 match f with
 | .CVar _ => 0
 | .BVar _ => 0
-| .Add g h => max (depth g) (depth h) + 1
-| .Mult g h => max (depth g) (depth h) + 1
-| .Neg g => depth g + 1
+| .Add g h => max (depthCTerm g) (depthCTerm h) + 1
+| .Mult g h => max (depthCTerm g) (depthCTerm h) + 1
+| .Neg g => depthCTerm g + 1
 | .Const _ => 0
 
+def sizeCircuit (c : Circuit α ID) : ℕ :=
+  match c with
+  | .Pure t => sizeCTerm t
+  | .Abs c => sizeCircuit c
+  | .App c₁ c₂ => sizeCircuit c₁ + sizeCircuit c₂
 open Formulas
 noncomputable def pureCTermToFormula
   (f: CTerm α ID) (hyp : isPureCTerm f):  Formula α ID :=
