@@ -13,7 +13,7 @@ namespace Formulas
 open MvPolynomial
 
 inductive Formula (α : Type u) (Idx : Type v) where
-| Var (x: Idx)
+| CVar (x: Idx)
 | Add (g h: Formula α Idx): Formula α Idx
 | Mult (g h: Formula α Idx): Formula α Idx
 | Neg (g : Formula α Idx): Formula α Idx
@@ -46,7 +46,7 @@ def inputSize [Fintype Idx] (_ : Formula α Idx) := Fintype.card Idx
 
 def size (f: Formula α Idx) : ℕ :=
 match f with
-| .Var _ => 1
+| .CVar _ => 1
 | .Add g h => size g + size h + 1
 | .Mult g h => size g + size h + 1
 | .Neg g => size g + 1
@@ -54,7 +54,7 @@ match f with
 
 def depth (f: Formula α Idx) : ℕ :=
 match f with
-| .Var _ => 0
+| .CVar _ => 0
 | .Add g h => max (depth g) (depth h) + 1
 | .Mult g h => max (depth g) (depth h) + 1
 | .Neg g => depth g + 1
@@ -63,14 +63,14 @@ match f with
 @[simp]
 noncomputable def evalToPolynomial [CommRing α] (f: Formula α Idx) : (MvPolynomial Idx α) :=
 match f with
-| .Var x => X x ^ 1
+| .CVar x => X x ^ 1
 | .Add g h => evalToPolynomial g + evalToPolynomial h
 | .Mult g h => evalToPolynomial g * evalToPolynomial h
 | .Neg g => - evalToPolynomial g
 | .Const c => MvPolynomial.C c
 
 lemma size_zero_const_or_var (f: Formula α Idx) :
-  size f = 0 → (∃ x, f = .Var x) ∨ (∃ c, f = .Const c) := by
+  size f = 0 → (∃ x, f = .CVar x) ∨ (∃ c, f = .Const c) := by
   intro h
   cases f with (simp_all [size])
 
@@ -101,7 +101,7 @@ lemma size_highest_degree [CommRing α] [Nontrivial α] :
 -/
 def coeFormula [Coe Idx₁ Idx₂] (f : Formula α Idx₁) : Formula α Idx₂ :=
   match f with
-    | .Var x => .Var ↑x
+    | .CVar x => .CVar ↑x
     | .Add g h => .Add (coeFormula g) (coeFormula h)
     | .Mult g h => .Mult (coeFormula g) (coeFormula h)
     | .Neg p => .Neg (coeFormula p)
@@ -167,7 +167,7 @@ theorem complexity_UB_monomial
       simp_all only [forall_const]
       unfold FormulaComplexityUpperBound at ih
       obtain ⟨formula, ⟨h₁, h₂⟩⟩ := ih
-      exists (formula * (.Var x))
+      exists (formula * (.CVar x))
       simp [evalToPolynomial, h₁]
       constructor
       · ring
