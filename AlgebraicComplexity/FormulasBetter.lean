@@ -5,7 +5,10 @@ Authors: Alexander Ikonomou, Shreyas Srinivas
 -/
 import Mathlib
 
-set_option linter.unusedTactic false
+
+namespace AlgebraicComplexity
+
+namespace Formulas
 
 open MvPolynomial
 
@@ -18,6 +21,8 @@ inductive Formula (α : Type u) (Idx : Type v) where
 
 notation "C[" val "]" => Formula.Const val
 notation "V[" name "]" =>  Formula.Var ⟨name, by grind⟩
+
+variable {α : Type u} {Idx : Type v}
 
 instance zero [Ring α]: Zero (Formula α Idx) where
   zero := .Const 0
@@ -68,7 +73,6 @@ lemma size_zero_const_or_var (f: Formula α Idx) :
   size f = 0 → (∃ x, f = .Var x) ∨ (∃ c, f = .Const c) := by
   intro h
   cases f with (simp_all [size])
-  done
 
 lemma size_highest_degree [CommRing α] [Nontrivial α] :
   ∀ f: Formula α Idx, size f ≥ MvPolynomial.totalDegree (evalToPolynomial f) - 1 := by
@@ -90,7 +94,7 @@ lemma size_highest_degree [CommRing α] [Nontrivial α] :
         rw [size]
         grind
       }
-    done
+
 
 /--
 `coerce_up f` coerces a formula `f` in `n` variables to a formula in `n + 1` variables.
@@ -170,3 +174,7 @@ theorem complexity_UB_monomial
       · simp[size]
         rw [h₂]
         ring
+
+end Formulas
+
+end AlgebraicComplexity
