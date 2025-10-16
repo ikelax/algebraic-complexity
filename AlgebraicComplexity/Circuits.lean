@@ -25,7 +25,9 @@ inductive CTerm (α : Type u) (ID : Type v) where
   | Neg (g : CTerm α ID): CTerm α ID
   | Const (c : α): CTerm α ID
 
--- This Lambda calculus is meant to be a safe substitution mechanism
+/-- This Lambda calculus is meant to be a safe substitution mechanism. Whence the separation between CTerms and Circuits.
+ You can always distinguish between the lambda calculus stuff
+and the purely circuit stuff. This matters for several stuff -/
 inductive Circuit (α : Type u) (ID : Type v) where
   | Pure (t : CTerm α ID) -- Pure Terms
   | Abs (t : Circuit α ID) -- Lambda abstraction. De Bruijn indices. No free variables. Disallow looseBVars.
@@ -146,7 +148,7 @@ match f with
 noncomputable def evalToPolynomial [CommRing α] (c : CTerm α ID) (hyp : isPureCTerm c) : MvPolynomial ID α :=
   let form := pureCTermToFormula c hyp
   Formulas.evalToPolynomial form
-  
+
 end Circuits
 
 end AlgebraicComplexity
