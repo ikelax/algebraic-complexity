@@ -181,7 +181,7 @@ theorem complexity_monomial [iCRα : CommRing α] [ntα: Nontrivial α] (n d: �
         use new_circ
         constructor
         · simp_all [new_circ, evalToPolynomial]
-          ring_nf
+          ring
           grind
           done
         · constructor
