@@ -30,16 +30,16 @@ instance zero [Ring α]: Zero (Formula α Idx) where
 instance one [Ring α]: One (Formula α Idx) where
   one := .Const 1
 
-instance add [Ring α]: Add (Formula α Idx) where
+instance add : Add (Formula α Idx) where
   add := .Add
 
-instance neg [Ring α] : Neg (Formula α Idx) where
+instance neg  : Neg (Formula α Idx) where
   neg := .Neg
 
-instance sub [Ring α] : Sub (Formula α Idx) where
+instance sub  : Sub (Formula α Idx) where
   sub a b := a + (- b)
 
-instance mul' [Ring α] : Mul (Formula α Idx) where
+instance mul : Mul (Formula α Idx) where
   mul := .Mult
 
 def inputSize [Fintype Idx] (_ : Formula α Idx) := Fintype.card Idx
