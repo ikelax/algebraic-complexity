@@ -12,7 +12,8 @@ inductive Formula (α : Type u) (n : ℕ) where
 | Const (c : α): Formula α n
 
 notation "C[" val "]" => Formula.Const val
-notation "V[" name "]" =>  Formula.Var ⟨name, by decide⟩
+notation "V[" name "]" =>  Formula.Var ⟨name, by grind⟩
+
 instance zero [Ring α]: Zero (Formula α n) where
   zero := .Const 0
 
@@ -59,36 +60,28 @@ match f with
 lemma size_zero_const_or_var (f: Formula α n) :
   size f = 0 → (∃ x, f = .Var x) ∨ (∃ c, f = .Const c) := by
   intro h
-  cases f with (simp_all[size, h])
+  cases f with (simp_all [size])
   done
 
 lemma size_highest_degree [CommRing α] [Nontrivial α] :
   ∀ f: Formula α n, size f ≥ MvPolynomial.totalDegree (evalToPolynomial f) - 1 := by
     intro f
-    induction f with
-      | Var X => {
-        rw[evalToPolynomial, totalDegree_X_pow]
-        simp
-      }
+    induction f with (simp_all[evalToPolynomial])
       | Add g h ihg ihh => {
-        rw[evalToPolynomial, size]
+        rw[size]
         have h : (evalToPolynomial g + evalToPolynomial h).totalDegree - 1 ≤ max (size g) (size h) := by
           have t := totalDegree_add (evalToPolynomial g) (evalToPolynomial h)
           omega
-        omega
+        grind
       }
       | Mult g h ihg ihh => {
-        rw[evalToPolynomial, size]
+        rw[size]
         have m := totalDegree_mul (evalToPolynomial g) (evalToPolynomial h)
-        omega
-      }
-      | Const c => {
-        rw[evalToPolynomial, totalDegree_C]
-        omega
+        grind
       }
       | Neg g ih => {
-        rw [evalToPolynomial, size, totalDegree_neg]
-        omega
+        rw [size]
+        grind
       }
     done
 
@@ -97,7 +90,7 @@ lemma size_highest_degree [CommRing α] [Nontrivial α] :
 -/
 def coerce_up (f : Formula α n) : Formula α (n + 1) :=
   match f with
-    | .Var x => .Var x
+    | .Var x => .Var ⟨x, by grind⟩
     | .Add g h => .Add (coerce_up g) (coerce_up h)
     | .Mult g h => .Mult (coerce_up g) (coerce_up h)
     | .Neg p => .Neg (coerce_up p)
@@ -162,6 +155,8 @@ lemma coerce_up_preserves_incrVar_eval [CommRing α]
         subst hp_eval
         simp_all only [algHom_C, algebraMap_eq, rename_X, map_add, map_mul, map_neg]
       )
+  | Var x =>
+      simp [Fin.castLE]
   done
 
 
@@ -182,11 +177,12 @@ theorem complexity_monomial [iCRα : CommRing α] [ntα: Nontrivial α] (n d: �
       · specialize ih hb
         simp [L] at ih
         obtain ⟨circ_h, eval_h, size_h⟩ := ih
-        let new_circ : Formula α (n + 1) := Formula.Mult circ_h (.Var (n + 1))
+        let new_circ : Formula α (n + 1) := Formula.Mult circ_h (.Var ⟨n, by grind⟩)
         use new_circ
         constructor
         · simp_all [new_circ, evalToPolynomial]
           ring_nf
+          grind
           done
         · constructor
           . intro f
